@@ -5,14 +5,14 @@ name: 'media'
 services:
   qbittorrent:
     image: linuxserver/qbittorrent:latest
-    restart: unless-stopped
+    restart: always
     environment:
       - TZ=America/Sao_Paulo
       - WEBUI_PORT=8080
       - PUID=1000
       - PGID=1000
     volumes:
-      - /home/servo/qbittorrent/config:/config
+      - /home/servo/Services/qbittorrent/config:/config
       - /mnt/satassd/plex_home_server_files/Downloads/torrents:/downloads
     ports:
       - '8080:8080'
@@ -20,7 +20,7 @@ services:
 
   bazarr:
     image: ghcr.io/linuxserver/bazarr:latest
-    restart: unless-stopped
+    restart: always
     environment:
       - TZ=America/Sao_Paulo
       - PUID=1000
@@ -28,13 +28,13 @@ services:
     volumes:
       - /mnt/satassd/plex_home_server_files/Videos/radarr:/movies
       - /mnt/satassd/plex_home_server_files/Videos/sonarr:/tv
-      - /home/servo/bazarr/appdata/config:/config
+      - /home/servo/Services/bazarr/appdata/config:/config
     ports:
       - '6767:6767'
 
   prowlarr:
     image: ghcr.io/hotio/prowlarr:latest
-    restart: unless-stopped
+    restart: always
     depends_on:
       - flaresolverr
     environment:
@@ -42,21 +42,21 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - /home/servo/prowlarr/config:/config
+      - /home/servo/Services/prowlarr/config:/config
     ports:
       - '9696:9696'
 
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest
-    restart: unless-stopped
+    restart: always
     volumes:
-      - /home/servo/flaresolverr/config:/config
+      - /home/servo/Services/flaresolverr/config:/config
     ports:
       - '8191:8191'
 
   radarr:
     image: ghcr.io/linuxserver/radarr:latest
-    restart: unless-stopped
+    restart: always
     depends_on:
       - qbittorrent
     environment:
@@ -64,7 +64,7 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - /home/servo/radarr/appdata/config:/config
+      - /home/servo/Services/radarr/appdata/config:/config
       - /mnt/satassd/plex_home_server_files/Downloads/torrents:/downloads
       - /mnt/satassd/plex_home_server_files/Videos/radarr/movies:/movies
       - /mnt/satassd/plex_home_server_files/Videos/radarr/anime:/anime
@@ -73,7 +73,7 @@ services:
 
   sonarr:
     image: ghcr.io/linuxserver/sonarr:latest
-    restart: unless-stopped
+    restart: always
     depends_on:
       - qbittorrent
     environment:
@@ -81,7 +81,7 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - /home/servo/sonarr/appdata/config:/config
+      - /home/servo/Services/sonarr/appdata/config:/config
       - /mnt/satassd/plex_home_server_files/Videos/sonarr:/tv
       - /mnt/satassd/plex_home_server_files/Downloads/torrents:/downloads
     ports:
@@ -89,7 +89,7 @@ services:
 
   plex:
     image: plexinc/pms-docker:latest
-    restart: unless-stopped
+    restart: always
     environment:
       - TZ=America/Sao_Paulo
       - PUID=1000
@@ -97,9 +97,9 @@ services:
       - VA_DRIVER=IHD
       - PLEX_HW_TRANS_MAX=16
     volumes:
-      - /home/servo/plex/config:/config
-      - /home/servo/plex/data:/data
-      - /home/servo/plex/transcode:/transcode
+      - /home/servo/Services/plex/config:/config
+      - /home/servo/Services/plex/data:/data
+      - /home/servo/Services/plex/transcode:/transcode
       - /mnt/satassd/plex_home_server_files/Videos:/media
     devices:
       - /dev/dri:/dev/dri

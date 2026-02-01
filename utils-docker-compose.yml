@@ -8,7 +8,7 @@ volumes:
 services:
   portainer:
     image: portainer/portainer-ce:latest
-    restart: unless-stopped
+    restart: always
     volumes:
       - portainer_data:/data
       - /var/run/docker.sock:/var/run/docker.sock
@@ -17,7 +17,7 @@ services:
 
   watchtower:
     image: containrrr/watchtower:latest
-    restart: unless-stopped
+    restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     cap_add:
@@ -26,12 +26,30 @@ services:
 
   librespeed:
     image: lscr.io/linuxserver/librespeed:latest
-    restart: unless-stopped
+    restart: always
     environment:
       - TZ=America/Sao_Paulo
       - PUID=1000
       - PGID=1000
     volumes:
-      - /home/servo/librespeed:/config
+      - /home/servo/Services/librespeed:/config
     ports:
       - '9091:80'
+  homarr:
+    image: ghcr.io/homarr-labs/homarr:latest
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - /home/servo/Services/homarr/appdata:/appdata
+    environment:
+      - SECRET_ENCRYPTION_KEY=637d18f88f777efbad4b2f99e6417397dfc8a4cb02c7607be729b4a6c6c5abe3
+    ports:
+      - '7575:7575'
+  dash:
+    image: mauricenino/dashdot:latest
+    restart: always
+    privileged: true
+    ports:
+      - '8585:3001'
+    volumes:
+      - /mnt/Services/dash:/mnt/host:ro
